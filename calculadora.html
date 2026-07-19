@@ -1,452 +1,235 @@
 <!DOCTYPE html>
 <html lang="es">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Calculadora de Depreciación Ross-Heidecke</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Calculadora Profesional — Ross‑Heidecke</title>
     <style>
-      :root {
-        --navy: #0f2b4d;
-        --navy-dark: #081b2f;
-        --blue: #1f5fbf;
-        --sky: #4a90e2;
-        --light: #f4f7fb;
-        --border: #dce2ea;
-        --text: #213244;
-        --muted: #6b7684;
-        --danger: #c94a4a;
-        --success: #2e8b57;
+      :root{
+        --blue-900:#0b2340; /* azul profundo */
+        --blue-700:#1f5fbf;
+        --sky:#4a90e2;
+        --gray-100:#f4f7fb; /* gris claro */
+        --border:#e2e8f0;
+        --text:#1f2d3d;
+        --muted:#6b7684;
+        --danger:#c94a4a;
+        --white:#ffffff;
       }
-
-      * {
-        box-sizing: border-box;
+      *{box-sizing:border-box}
+      html,body{height:100%}
+      body{
+        margin:0;
+        font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+        background:linear-gradient(180deg,var(--gray-100) 0%, #fbfdff 100%);
+        color:var(--text);
+        -webkit-font-smoothing:antialiased;
+        -moz-osx-font-smoothing:grayscale;
+        padding:28px;
+        display:flex;align-items:center;justify-content:center;
       }
-
-      body {
-        margin: 0;
-        font-family: "Segoe UI", Roboto, Arial, sans-serif;
-        background: linear-gradient(135deg, #eef4fb 0%, #f8fbff 100%);
-        color: var(--text);
+      .card{
+        width:min(980px,96%);
+        background:var(--white);
+        border-radius:16px;
+        box-shadow:0 18px 40px rgba(11,35,64,0.12);
+        overflow:hidden;border:1px solid var(--border);
       }
-
-      .page {
-        min-height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 24px;
-      }
-
-      .card {
-        width: min(980px, 100%);
-        background: #fff;
-        border-radius: 24px;
-        box-shadow: 0 18px 56px rgba(15, 43, 77, 0.14);
-        overflow: hidden;
-        border: 1px solid var(--border);
-      }
-
-      .hero {
-        background: linear-gradient(120deg, var(--navy-dark) 0%, var(--navy) 55%, var(--sky) 100%);
-        color: white;
-        padding: 30px 32px;
-      }
-
-      .hero h1 {
-        margin: 0 0 8px;
-        font-size: clamp(1.4rem, 2.4vw, 2rem);
-      }
-
-      .hero p {
-        margin: 0;
-        max-width: 720px;
-        line-height: 1.6;
-        color: rgba(255, 255, 255, 0.9);
-      }
-
-      .content {
-        display: grid;
-        grid-template-columns: 1.1fr 0.9fr;
-        gap: 0;
-      }
-
-      .form-panel,
-      .results-panel {
-        padding: 28px 32px;
-      }
-
-      .form-panel {
-        background: #ffffff;
-      }
-
-      .results-panel {
-        background: var(--light);
-        border-left: 1px solid var(--border);
-      }
-
-      .section-title {
-        margin: 0 0 16px;
-        font-size: 1rem;
-        font-weight: 700;
-        color: var(--navy);
-        letter-spacing: 0.04em;
-        text-transform: uppercase;
-      }
-
-      .field-group {
-        margin-bottom: 16px;
-      }
-
-      label {
-        display: block;
-        font-weight: 600;
-        margin-bottom: 6px;
-        color: var(--navy);
-      }
-
-      input,
-      select,
-      button {
-        width: 100%;
-        border-radius: 12px;
-        border: 1px solid var(--border);
-        padding: 12px 14px;
-        font-size: 1rem;
-        transition: border-color 0.2s ease, box-shadow 0.2s ease;
-      }
-
-      input:focus,
-      select:focus {
-        outline: none;
-        border-color: var(--sky);
-        box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.16);
-      }
-
-      .hint {
-        display: block;
-        margin-top: 6px;
-        font-size: 0.86rem;
-        color: var(--muted);
-      }
-
-      .error-text {
-        margin-top: 8px;
-        color: var(--danger);
-        font-size: 0.9rem;
-        font-weight: 600;
-        min-height: 1.2em;
-      }
-
-      .actions {
-        display: flex;
-        gap: 12px;
-        margin-top: 20px;
-      }
-
-      button {
-        cursor: pointer;
-        font-weight: 700;
-        border: none;
-      }
-
-      .primary-btn {
-        background: linear-gradient(135deg, var(--blue) 0%, var(--sky) 100%);
-        color: white;
-        box-shadow: 0 8px 22px rgba(31, 95, 191, 0.3);
-      }
-
-      .secondary-btn {
-        background: #f0f4f9;
-        color: var(--navy);
-      }
-
-      .result-card {
-        background: white;
-        border-radius: 18px;
-        padding: 18px;
-        border: 1px solid var(--border);
-        margin-bottom: 14px;
-      }
-
-      .result-card h3 {
-        margin: 0 0 10px;
-        font-size: 1rem;
-        color: var(--navy);
-      }
-
-      .result-value {
-        font-size: 1.25rem;
-        font-weight: 700;
-        color: var(--navy-dark);
-      }
-
-      .result-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 12px;
-      }
-
-      .metric {
-        background: #f7faff;
-        border: 1px solid #e7eef7;
-        border-radius: 14px;
-        padding: 12px;
-      }
-
-      .metric .label {
-        display: block;
-        font-size: 0.82rem;
-        color: var(--muted);
-        margin-bottom: 6px;
-      }
-
-      .metric .value {
-        font-size: 1rem;
-        font-weight: 700;
-        color: var(--navy-dark);
-      }
-
-      .formula-box {
-        background: #f8fbff;
-        border-left: 4px solid var(--blue);
-        padding: 12px 14px;
-        border-radius: 10px;
-        color: var(--text);
-        line-height: 1.5;
-        font-size: 0.95rem;
-      }
-
-      .hidden {
-        display: none;
-      }
-
-      @media (max-width: 830px) {
-        .content {
-          grid-template-columns: 1fr;
-        }
-
-        .results-panel {
-          border-left: none;
-          border-top: 1px solid var(--border);
-        }
-      }
-
-      @media (max-width: 560px) {
-        .page {
-          padding: 12px;
-        }
-
-        .hero,
-        .form-panel,
-        .results-panel {
-          padding: 20px;
-        }
-
-        .actions {
-          flex-direction: column;
-        }
-
-        .result-grid {
-          grid-template-columns: 1fr;
-        }
-      }
+      .hero{background:linear-gradient(120deg,var(--blue-900),var(--blue-700));color:var(--white);padding:28px 32px}
+      .hero h1{margin:0;font-size:clamp(1.25rem,2.6vw,1.8rem)}
+      .hero p{margin:8px 0 0;color:rgba(255,255,255,0.9);max-width:900px}
+      .grid{display:grid;grid-template-columns:1.05fr .95fr}
+      .panel{padding:24px}
+      .section-title{font-size:0.875rem;font-weight:700;color:var(--blue-900);text-transform:uppercase;letter-spacing:0.04em;margin:0 0 12px}
+      label{display:block;font-weight:600;margin-bottom:8px;color:var(--blue-900)}
+      .field{margin-bottom:14px}
+      input[type=number],select{width:100%;padding:12px 14px;border-radius:10px;border:1px solid var(--border);font-size:1rem}
+      input[type=number]:focus,select:focus{outline:none;box-shadow:0 6px 18px rgba(31,95,191,0.12);border-color:var(--sky)}
+      .hint{font-size:0.85rem;color:var(--muted);margin-top:6px}
+      .error{color:var(--danger);font-weight:700;margin-top:8px;min-height:1.2em}
+      .row{display:flex;gap:10px}
+      .actions{display:flex;gap:12px;margin-top:12px}
+      button{border:0;padding:12px 16px;border-radius:10px;font-weight:700;cursor:pointer}
+      .btn-primary{background:linear-gradient(135deg,var(--blue-700),var(--sky));color:var(--white);box-shadow:0 8px 22px rgba(31,95,191,0.18)}
+      .btn-ghost{background:#f7fafc;color:var(--blue-900);border:1px solid var(--border)}
+      .result-card{background:var(--white);border-radius:12px;padding:14px;border:1px solid var(--border);margin-bottom:12px}
+      .result-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:12px}
+      .metric{background:#f8fbff;border-radius:10px;padding:10px;border:1px solid #e7eef7}
+      .metric .label{font-size:0.82rem;color:var(--muted)}
+      .metric .value{font-weight:800;color:var(--blue-900);font-size:1rem}
+      .formula{background:#f4f8ff;border-left:4px solid var(--blue-700);padding:10px;border-radius:8px;color:var(--text);font-size:0.94rem}
+      .factors{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+      .factor .label{font-size:0.78rem;color:var(--muted)}
+      .factor .value{font-weight:800;font-size:1.05rem;color:var(--blue-900)}
+      @media(max-width:860px){.grid{grid-template-columns:1fr}.panel{padding:18px}.factors{grid-template-columns:1fr}}
     </style>
   </head>
   <body>
-    <main class="page">
-      <section class="card" aria-label="Calculadora de depreciación profesional">
-        <header class="hero">
-          <h1>Calculadora de Depreciación Profesional</h1>
-          <p>
-            Método Ross-Heidecke para valorar el deterioro económico de un inmueble con criterios técnicos,
-            conservando la precisión necesaria para informes ejecutivos.
-          </p>
-        </header>
+    <main class="card" role="main">
+      <header class="hero">
+        <h1>Calculadora Profesional — Método Ross‑Heidecke</h1>
+        <p>Herramienta local para cálculo de depreciación técnica de inmuebles. Todos los cálculos se realizan en el navegador.</p>
+      </header>
 
-        <div class="content">
-          <div class="form-panel">
-            <h2 class="section-title">Datos de entrada</h2>
-            <form id="calculator-form" novalidate>
-              <div class="field-group">
-                <label for="vrn">Valor de Reproducción Nuevo (VRN)</label>
-                <input id="vrn" name="vrn" type="number" min="0.01" step="0.01" placeholder="Ej. 1250500" required />
-                <span class="hint">Ingrese un valor mayor a 0.</span>
-                <div class="error-text" id="error-vrn"></div>
+      <div class="grid">
+        <section class="panel" aria-labelledby="datos-title">
+          <h2 id="datos-title" class="section-title">Datos de entrada</h2>
+
+          <form id="calc-form" novalidate>
+            <div class="field">
+              <label for="vrn">Valor de Reproducción Nuevo (VRN)</label>
+              <input id="vrn" name="vrn" type="number" min="0.01" step="0.01" inputmode="decimal" placeholder="Ej. 1250500" required />
+              <div class="hint">Ingrese el valor en moneda local. Debe ser mayor a 0.</div>
+              <div id="err-vrn" class="error" aria-live="polite"></div>
+            </div>
+
+            <div class="row">
+              <div style="flex:1" class="field">
+                <label for="edad">Edad actual (e) — años</label>
+                <input id="edad" name="edad" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Ej. 10" required />
+                <div id="err-edad" class="error" aria-live="polite"></div>
               </div>
 
-              <div class="field-group">
-                <label for="edad">Edad actual del inmueble (e)</label>
-                <input id="edad" name="edad" type="number" min="0" step="0.01" placeholder="Ej. 10" required />
-                <span class="hint">Años de antigüedad del inmueble.</span>
-                <div class="error-text" id="error-edad"></div>
+              <div style="flex:1" class="field">
+                <label for="vida">Vida útil total (V) — años</label>
+                <input id="vida" name="vida" type="number" min="0.01" step="0.01" inputmode="decimal" placeholder="Ej. 50" required />
+                <div class="hint">Debe ser estrictamente mayor que la edad.</div>
+                <div id="err-vida" class="error" aria-live="polite"></div>
               </div>
+            </div>
 
-              <div class="field-group">
-                <label for="vida">Vida útil total estimada (V)</label>
-                <input id="vida" name="vida" type="number" min="0.01" step="0.01" placeholder="Ej. 50" required />
-                <span class="hint">Debe ser mayor que la edad actual.</span>
-                <div class="error-text" id="error-vida"></div>
-              </div>
+            <div class="field">
+              <label for="estado">Estado de conservación — Tabla Heidecke</label>
+              <select id="estado" required>
+                <option value="">Seleccione un grado</option>
+                <option value="0.00">Grado 1 — Nuevo / Excelente estado (p = 0.00)</option>
+                <option value="0.03">Grado 2 — Regular / Conservación normal (p = 0.03)</option>
+                <option value="0.08">Grado 3 — Reparaciones sencillas (p = 0.08)</option>
+                <option value="0.18">Grado 4 — Reparaciones importantes (p = 0.18)</option>
+                <option value="0.50">Grado 5 — Demolición / Inservible (p = 0.50)</option>
+              </select>
+              <div id="err-estado" class="error" aria-live="polite"></div>
+            </div>
 
-              <div class="field-group">
-                <label for="estado">Estado de conservación</label>
-                <select id="estado" name="estado" required>
-                  <option value="">Seleccione un grado</option>
-                  <option value="0.00">Grado 1 - Nuevo / Excelente estado</option>
-                  <option value="0.03">Grado 2 - Regular / Conservación normal</option>
-                  <option value="0.08">Grado 3 - Reparaciones sencillas / Necesita mantenimiento menor</option>
-                  <option value="0.18">Grado 4 - Reparaciones importantes / Desatendido</option>
-                  <option value="0.50">Grado 5 - Demolición / Inservible</option>
-                </select>
-                <div class="error-text" id="error-estado"></div>
-              </div>
+            <div class="actions">
+              <button type="submit" class="btn-primary">Calcular</button>
+              <button type="reset" class="btn-ghost" id="btn-reset">Limpiar</button>
+            </div>
+          </form>
+        </section>
 
-              <div class="actions">
-                <button type="submit" class="primary-btn">Calcular</button>
-                <button type="reset" class="secondary-btn" id="reset-btn">Limpiar</button>
-              </div>
-            </form>
+        <aside class="panel" aria-labelledby="result-title">
+          <h2 id="result-title" class="section-title">Resultados</h2>
+
+          <div id="results-empty" class="result-card">
+            <strong>Sin cálculo</strong>
+            <div class="hint" style="margin-top:6px">Complete los datos y pulse "Calcular" para ver resultados.</div>
           </div>
 
-          <aside class="results-panel" aria-live="polite">
-            <h2 class="section-title">Resultados</h2>
-            <div id="results-empty" class="result-card">
-              <h3>Sin cálculo aún</h3>
-              <p style="margin: 0; color: var(--muted); line-height: 1.6;">
-                Complete los datos y haga clic en “Calcular” para obtener el resultado de depreciación.
-              </p>
-            </div>
-
-            <div id="results-wrapper" class="hidden">
-              <div class="result-card">
-                <h3>Factor de depreciación Ross (R)</h3>
-                <div class="result-value" id="ross-value">0.0000</div>
+          <div id="results" class="hidden" aria-live="polite">
+            <div class="factors" style="margin-bottom:12px">
+              <div class="factor result-card">
+                <div class="label">Factor Ross (R)</div>
+                <div id="R_val" class="value">0.0000</div>
               </div>
-
-              <div class="result-card">
-                <h3>Coeficiente Heidecke (p)</h3>
-                <div class="result-value" id="heidecke-value">0.0000</div>
+              <div class="factor result-card">
+                <div class="label">Coeficiente Heidecke (p)</div>
+                <div id="p_val" class="value">0.0000</div>
               </div>
-
-              <div class="result-card">
-                <h3>Factor total Ross-Heidecke (F_total)</h3>
-                <div class="result-value" id="total-value">0.0000</div>
-              </div>
-
-              <div class="formula-box">
-                <strong>Fórmula aplicada:</strong><br />
-                R = 0.5 × ((e/V) + (e²/V²))<br />
-                F_total = R + (p × (1 - R))
-              </div>
-
-              <div class="result-grid" style="margin-top: 14px;">
-                <div class="metric">
-                  <span class="label">Depreciación acumulada</span>
-                  <span class="value" id="depreciacion-value">$0.00</span>
-                </div>
-                <div class="metric">
-                  <span class="label">Valor actual neto</span>
-                  <span class="value" id="valor-neto-value">$0.00</span>
-                </div>
+              <div class="factor result-card">
+                <div class="label">Factor Total (F_total)</div>
+                <div id="F_val" class="value">0.0000</div>
               </div>
             </div>
-          </aside>
-        </div>
-      </section>
+
+            <div class="formula">Fórmula: R = 0.5 × ((e/V) + (e²/V²)) — F_total = R + p × (1 − R)</div>
+
+            <div class="result-grid" style="margin-top:12px">
+              <div class="metric">
+                <div class="label">Depreciación acumulada</div>
+                <div id="depr_val" class="value">$0.00</div>
+              </div>
+              <div class="metric">
+                <div class="label">Valor actual neto</div>
+                <div id="neto_val" class="value">$0.00</div>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
     </main>
 
     <script>
-      const form = document.getElementById('calculator-form');
-      const resultsWrapper = document.getElementById('results-wrapper');
-      const resultsEmpty = document.getElementById('results-empty');
-      const resetBtn = document.getElementById('reset-btn');
+      (function(){
+        const form = document.getElementById('calc-form');
+        const vrnEl = document.getElementById('vrn');
+        const edadEl = document.getElementById('edad');
+        const vidaEl = document.getElementById('vida');
+        const estadoEl = document.getElementById('estado');
 
-      function showError(fieldId, message) {
-        const el = document.getElementById(fieldId);
-        if (el) {
-          el.textContent = message;
+        const errV = document.getElementById('err-vrn');
+        const errE = document.getElementById('err-edad');
+        const errVi = document.getElementById('err-vida');
+        const errEs = document.getElementById('err-estado');
+
+        const results = document.getElementById('results');
+        const resultsEmpty = document.getElementById('results-empty');
+        const R_val = document.getElementById('R_val');
+        const p_val = document.getElementById('p_val');
+        const F_val = document.getElementById('F_val');
+        const depr_val = document.getElementById('depr_val');
+        const neto_val = document.getElementById('neto_val');
+
+        function clearErrors(){errV.textContent='';errE.textContent='';errVi.textContent='';errEs.textContent=''}
+
+        function formatFactor(n){return Number.isFinite(n) ? n.toFixed(4) : '0.0000'}
+
+        function formatMoney(n){
+          if(!Number.isFinite(n)) return '$0.00';
+          return '$' + Number(n).toLocaleString('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2});
         }
-      }
 
-      function clearErrors() {
-        showError('error-vrn', '');
-        showError('error-edad', '');
-        showError('error-vida', '');
-        showError('error-estado', '');
-      }
+        function validateInputs(vrn,edad,vida,estado){
+          let ok=true; clearErrors();
+          if(Number.isNaN(vrn) || vrn<=0){errV.textContent='VRN debe ser mayor a 0.';ok=false}
+          if(Number.isNaN(edad) || edad<0){errE.textContent='Edad inválida (>=0).';ok=false}
+          if(Number.isNaN(vida) || vida<=0){errVi.textContent='Vida útil debe ser > 0.';ok=false}
+          else if(!Number.isNaN(edad) && vida<=edad){errVi.textContent='Vida útil debe ser estrictamente mayor que la edad.';ok=false}
+          if(!estado){errEs.textContent='Seleccione el grado de conservación.';ok=false}
+          return ok;
+        }
 
-      function formatCurrency(value) {
-        return '$' + value.toLocaleString('es-ES', {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2,
+        form.addEventListener('submit',function(e){
+          e.preventDefault();
+          const vrn = parseFloat(vrnEl.value);
+          const edad = parseFloat(edadEl.value);
+          const vida = parseFloat(vidaEl.value);
+          const p = estadoEl.value !== '' ? parseFloat(estadoEl.value) : null;
+
+          if(!validateInputs(vrn,edad,vida,estadoEl.value)){
+            results.classList.add('hidden');resultsEmpty.classList.remove('hidden');return
+          }
+
+          // Cálculos según especificación
+          const R = 0.5 * ((edad/vida) + ((edad*edad)/(vida*vida)));
+          const F_total = R + (p * (1 - R));
+          const depreciacion = vrn * F_total;
+          const valorNeto = vrn * (1 - F_total);
+
+          // Mostrar resultados
+          R_val.textContent = formatFactor(R);
+          p_val.textContent = formatFactor(p);
+          F_val.textContent = formatFactor(F_total);
+          depr_val.textContent = formatMoney(depreciacion);
+          neto_val.textContent = formatMoney(valorNeto);
+
+          resultsEmpty.classList.add('hidden');results.classList.remove('hidden');
         });
-      }
 
-      function formatFactor(value) {
-        return value.toFixed(4);
-      }
-
-      form.addEventListener('submit', function (event) {
-        event.preventDefault();
-        clearErrors();
-
-        const vrn = parseFloat(document.getElementById('vrn').value);
-        const edad = parseFloat(document.getElementById('edad').value);
-        const vida = parseFloat(document.getElementById('vida').value);
-        const estado = document.getElementById('estado').value;
-
-        let valid = true;
-
-        if (Number.isNaN(vrn) || vrn <= 0) {
-          showError('error-vrn', 'Ingrese un VRN válido mayor a 0.');
-          valid = false;
-        }
-
-        if (Number.isNaN(edad) || edad < 0) {
-          showError('error-edad', 'Ingrese una edad válida mayor o igual a 0.');
-          valid = false;
-        }
-
-        if (Number.isNaN(vida) || vida <= 0) {
-          showError('error-vida', 'Ingrese una vida útil válida mayor a 0.');
-          valid = false;
-        } else if (!Number.isNaN(edad) && vida <= edad) {
-          showError('error-vida', 'La vida útil debe ser estrictamente mayor que la edad actual.');
-          valid = false;
-        }
-
-        if (!estado) {
-          showError('error-estado', 'Seleccione un grado de conservación.');
-          valid = false;
-        }
-
-        if (!valid) {
-          resultsWrapper.classList.add('hidden');
-          resultsEmpty.classList.remove('hidden');
-          return;
-        }
-
-        const p = parseFloat(estado);
-        const R = 0.5 * ((edad / vida) + ((edad * edad) / (vida * vida)));
-        const F_total = R + (p * (1 - R));
-        const depreciacion = vrn * F_total;
-        const valorNeto = vrn * (1 - F_total);
-
-        document.getElementById('ross-value').textContent = formatFactor(R);
-        document.getElementById('heidecke-value').textContent = formatFactor(p);
-        document.getElementById('total-value').textContent = formatFactor(F_total);
-        document.getElementById('depreciacion-value').textContent = formatCurrency(depreciacion);
-        document.getElementById('valor-neto-value').textContent = formatCurrency(valorNeto);
-
-        resultsEmpty.classList.add('hidden');
-        resultsWrapper.classList.remove('hidden');
-      });
-
-      resetBtn.addEventListener('click', function () {
-        clearErrors();
-        resultsWrapper.classList.add('hidden');
-        resultsEmpty.classList.remove('hidden');
-      });
+        document.getElementById('btn-reset').addEventListener('click',function(){
+          clearErrors(); results.classList.add('hidden'); resultsEmpty.classList.remove('hidden');
+        });
+      })();
     </script>
   </body>
 </html>
