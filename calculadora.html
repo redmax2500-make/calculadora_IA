@@ -6,62 +6,73 @@
     <title>Calculadora Profesional — Ross‑Heidecke</title>
     <style>
       :root{
-        --blue-900:#0b2340; /* azul profundo */
+        --blue-900:#0b2340;
         --blue-700:#1f5fbf;
         --sky:#4a90e2;
-        --gray-100:#f4f7fb; /* gris claro */
+        --gray-100:#f4f7fb;
         --border:#e2e8f0;
         --text:#1f2d3d;
         --muted:#6b7684;
         --danger:#c94a4a;
         --white:#ffffff;
       }
-      *{box-sizing:border-box}
-      html,body{height:100%}
+      *{box-sizing:border-box;}
+      html,body{height:100%;}
       body{
         margin:0;
-        font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+        font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
         background:linear-gradient(180deg,var(--gray-100) 0%, #fbfdff 100%);
         color:var(--text);
         -webkit-font-smoothing:antialiased;
         -moz-osx-font-smoothing:grayscale;
         padding:28px;
-        display:flex;align-items:center;justify-content:center;
+        display:flex;
+        align-items:center;
+        justify-content:center;
       }
       .card{
         width:min(980px,96%);
         background:var(--white);
         border-radius:16px;
         box-shadow:0 18px 40px rgba(11,35,64,0.12);
-        overflow:hidden;border:1px solid var(--border);
+        overflow:hidden;
+        border:1px solid var(--border);
       }
-      .hero{background:linear-gradient(120deg,var(--blue-900),var(--blue-700));color:var(--white);padding:28px 32px}
-      .hero h1{margin:0;font-size:clamp(1.25rem,2.6vw,1.8rem)}
-      .hero p{margin:8px 0 0;color:rgba(255,255,255,0.9);max-width:900px}
-      .grid{display:grid;grid-template-columns:1.05fr .95fr}
-      .panel{padding:24px}
-      .section-title{font-size:0.875rem;font-weight:700;color:var(--blue-900);text-transform:uppercase;letter-spacing:0.04em;margin:0 0 12px}
-      label{display:block;font-weight:600;margin-bottom:8px;color:var(--blue-900)}
-      .field{margin-bottom:14px}
-      input[type=number],select{width:100%;padding:12px 14px;border-radius:10px;border:1px solid var(--border);font-size:1rem}
-      input[type=number]:focus,select:focus{outline:none;box-shadow:0 6px 18px rgba(31,95,191,0.12);border-color:var(--sky)}
-      .hint{font-size:0.85rem;color:var(--muted);margin-top:6px}
-      .error{color:var(--danger);font-weight:700;margin-top:8px;min-height:1.2em}
-      .row{display:flex;gap:10px}
-      .actions{display:flex;gap:12px;margin-top:12px}
-      button{border:0;padding:12px 16px;border-radius:10px;font-weight:700;cursor:pointer}
-      .btn-primary{background:linear-gradient(135deg,var(--blue-700),var(--sky));color:var(--white);box-shadow:0 8px 22px rgba(31,95,191,0.18)}
-      .btn-ghost{background:#f7fafc;color:var(--blue-900);border:1px solid var(--border)}
-      .result-card{background:var(--white);border-radius:12px;padding:14px;border:1px solid var(--border);margin-bottom:12px}
-      .result-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:12px}
-      .metric{background:#f8fbff;border-radius:10px;padding:10px;border:1px solid #e7eef7}
-      .metric .label{font-size:0.82rem;color:var(--muted)}
-      .metric .value{font-weight:800;color:var(--blue-900);font-size:1rem}
-      .formula{background:#f4f8ff;border-left:4px solid var(--blue-700);padding:10px;border-radius:8px;color:var(--text);font-size:0.94rem}
-      .factors{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-      .factor .label{font-size:0.78rem;color:var(--muted)}
-      .factor .value{font-weight:800;font-size:1.05rem;color:var(--blue-900)}
-      @media(max-width:860px){.grid{grid-template-columns:1fr}.panel{padding:18px}.factors{grid-template-columns:1fr}}
+      .hero{
+        background:linear-gradient(120deg,var(--blue-900),var(--blue-700));
+        color:var(--white);
+        padding:28px 32px;
+      }
+      .hero h1{margin:0;font-size:clamp(1.25rem,2.6vw,1.8rem);}
+      .hero p{margin:8px 0 0;color:rgba(255,255,255,0.92);max-width:900px;line-height:1.55;}
+      .grid{display:grid;grid-template-columns:1.05fr .95fr;}
+      .panel{padding:24px;}
+      .section-title{font-size:0.875rem;font-weight:700;color:var(--blue-900);text-transform:uppercase;letter-spacing:0.04em;margin:0 0 12px;}
+      label{display:block;font-weight:600;margin-bottom:8px;color:var(--blue-900);}
+      .field{margin-bottom:16px;}
+      input[type=number],select{width:100%;padding:14px 16px;border-radius:12px;border:1px solid var(--border);font-size:1rem;background:#fff;}
+      input[type=number]:focus,select:focus{outline:none;box-shadow:0 6px 18px rgba(31,95,191,0.14);border-color:var(--sky);}
+      .hint{font-size:0.86rem;color:var(--muted);margin-top:6px;}
+      .error{color:var(--danger);font-weight:700;margin-top:8px;min-height:1.2em;}
+      .row{display:flex;gap:14px;}
+      .actions{display:flex;gap:12px;margin-top:18px;flex-wrap:wrap;}
+      button{border:0;padding:12px 18px;border-radius:12px;font-weight:700;cursor:pointer;transition:transform 0.2s ease, box-shadow 0.2s ease;}
+      button:hover{transform:translateY(-1px);}
+      .btn-primary{background:linear-gradient(135deg,var(--blue-700),var(--sky));color:var(--white);box-shadow:0 8px 22px rgba(31,95,191,0.18);}
+      .btn-ghost{background:#f7fafc;color:var(--blue-900);border:1px solid var(--border);}
+      .result-card{background:var(--white);border-radius:14px;padding:16px;border:1px solid var(--border);margin-bottom:14px;}
+      .result-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:14px;}
+      .metric{background:#f8fbff;border-radius:12px;padding:14px;border:1px solid #e7eef7;}
+      .metric .label{font-size:0.82rem;color:var(--muted);margin-bottom:8px;display:block;}
+      .metric .value{font-weight:800;color:var(--blue-900);font-size:1.05rem;}
+      .formula{background:#f4f8ff;border-left:4px solid var(--blue-700);padding:14px;border-radius:10px;color:var(--text);font-size:0.95rem;line-height:1.6;}
+      .factors{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px;}
+      .factor{background:#f4f8ff;border-radius:12px;padding:14px;border:1px solid #e7eef7;}
+      .factor .label{font-size:0.82rem;color:var(--muted);margin-bottom:6px;display:block;}
+      .factor .value{font-weight:800;font-size:1rem;color:var(--blue-900);}
+      .hidden{display:none !important;}
+      @media(max-width:860px){.grid{grid-template-columns:1fr;}.panel{padding:18px;}.factors{grid-template-columns:1fr;}}
+      @media(max-width:560px){body{padding:16px;}.hero{padding:22px 20px;}.panel{padding:18px 16px;}.actions{flex-direction:column;} .row{flex-direction:column;}}
     </style>
   </head>
   <body>
@@ -85,13 +96,14 @@
 
             <div class="row">
               <div style="flex:1" class="field">
-                <label for="edad">Edad actual (e) — años</label>
+                <label for="edad">Edad actual del inmueble (e)</label>
                 <input id="edad" name="edad" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Ej. 10" required />
+                <div class="hint">Años de antigüedad.</div>
                 <div id="err-edad" class="error" aria-live="polite"></div>
               </div>
 
               <div style="flex:1" class="field">
-                <label for="vida">Vida útil total (V) — años</label>
+                <label for="vida">Vida útil total estimada (V)</label>
                 <input id="vida" name="vida" type="number" min="0.01" step="0.01" inputmode="decimal" placeholder="Ej. 50" required />
                 <div class="hint">Debe ser estrictamente mayor que la edad.</div>
                 <div id="err-vida" class="error" aria-live="polite"></div>
@@ -104,8 +116,8 @@
                 <option value="">Seleccione un grado</option>
                 <option value="0.00">Grado 1 — Nuevo / Excelente estado (p = 0.00)</option>
                 <option value="0.03">Grado 2 — Regular / Conservación normal (p = 0.03)</option>
-                <option value="0.08">Grado 3 — Reparaciones sencillas (p = 0.08)</option>
-                <option value="0.18">Grado 4 — Reparaciones importantes (p = 0.18)</option>
+                <option value="0.08">Grado 3 — Reparaciones sencillas / Necesita mantenimiento menor (p = 0.08)</option>
+                <option value="0.18">Grado 4 — Reparaciones importantes / Desatendido (p = 0.18)</option>
                 <option value="0.50">Grado 5 — Demolición / Inservible (p = 0.50)</option>
               </select>
               <div id="err-estado" class="error" aria-live="polite"></div>
@@ -123,20 +135,20 @@
 
           <div id="results-empty" class="result-card">
             <strong>Sin cálculo</strong>
-            <div class="hint" style="margin-top:6px">Complete los datos y pulse "Calcular" para ver resultados.</div>
+            <div class="hint" style="margin-top:6px;">Complete los datos y pulse "Calcular" para ver resultados.</div>
           </div>
 
           <div id="results" class="hidden" aria-live="polite">
-            <div class="factors" style="margin-bottom:12px">
-              <div class="factor result-card">
+            <div class="factors">
+              <div class="factor">
                 <div class="label">Factor Ross (R)</div>
                 <div id="R_val" class="value">0.0000</div>
               </div>
-              <div class="factor result-card">
+              <div class="factor">
                 <div class="label">Coeficiente Heidecke (p)</div>
                 <div id="p_val" class="value">0.0000</div>
               </div>
-              <div class="factor result-card">
+              <div class="factor">
                 <div class="label">Factor Total (F_total)</div>
                 <div id="F_val" class="value">0.0000</div>
               </div>
@@ -144,14 +156,14 @@
 
             <div class="formula">Fórmula: R = 0.5 × ((e/V) + (e²/V²)) — F_total = R + p × (1 − R)</div>
 
-            <div class="result-grid" style="margin-top:12px">
+            <div class="result-grid">
               <div class="metric">
-                <div class="label">Depreciación acumulada</div>
-                <div id="depr_val" class="value">$0.00</div>
+                <span class="label">Depreciación acumulada</span>
+                <span id="depr_val" class="value">$0.00</span>
               </div>
               <div class="metric">
-                <div class="label">Valor actual neto</div>
-                <div id="neto_val" class="value">$0.00</div>
+                <span class="label">Valor actual neto</span>
+                <span id="neto_val" class="value">$0.00</span>
               </div>
             </div>
           </div>
@@ -160,7 +172,7 @@
     </main>
 
     <script>
-      (function(){
+      (function() {
         const form = document.getElementById('calc-form');
         const vrnEl = document.getElementById('vrn');
         const edadEl = document.getElementById('edad');
@@ -180,56 +192,85 @@
         const depr_val = document.getElementById('depr_val');
         const neto_val = document.getElementById('neto_val');
 
-        function clearErrors(){errV.textContent='';errE.textContent='';errVi.textContent='';errEs.textContent=''}
-
-        function formatFactor(n){return Number.isFinite(n) ? n.toFixed(4) : '0.0000'}
-
-        function formatMoney(n){
-          if(!Number.isFinite(n)) return '$0.00';
-          return '$' + Number(n).toLocaleString('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2});
+        function clearErrors() {
+          errV.textContent = '';
+          errE.textContent = '';
+          errVi.textContent = '';
+          errEs.textContent = '';
         }
 
-        function validateInputs(vrn,edad,vida,estado){
-          let ok=true; clearErrors();
-          if(Number.isNaN(vrn) || vrn<=0){errV.textContent='VRN debe ser mayor a 0.';ok=false}
-          if(Number.isNaN(edad) || edad<0){errE.textContent='Edad inválida (>=0).';ok=false}
-          if(Number.isNaN(vida) || vida<=0){errVi.textContent='Vida útil debe ser > 0.';ok=false}
-          else if(!Number.isNaN(edad) && vida<=edad){errVi.textContent='Vida útil debe ser estrictamente mayor que la edad.';ok=false}
-          if(!estado){errEs.textContent='Seleccione el grado de conservación.';ok=false}
-          return ok;
+        function formatFactor(value) {
+          return Number.isFinite(value) ? value.toFixed(4) : '0.0000';
         }
 
-        form.addEventListener('submit',function(e){
-          e.preventDefault();
+        function formatMoney(value) {
+          if (!Number.isFinite(value)) return '$0.00';
+          return '$' + Number(value).toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        function validateInputs(vrn, edad, vida, estado) {
+          let valid = true;
+          clearErrors();
+
+          if (Number.isNaN(vrn) || vrn <= 0) {
+            errV.textContent = 'VRN debe ser mayor a 0.';
+            valid = false;
+          }
+          if (Number.isNaN(edad) || edad < 0) {
+            errE.textContent = 'Edad inválida (>= 0).';
+            valid = false;
+          }
+          if (Number.isNaN(vida) || vida <= 0) {
+            errVi.textContent = 'Vida útil debe ser mayor a 0.';
+            valid = false;
+          } else if (!Number.isNaN(edad) && vida <= edad) {
+            errVi.textContent = 'Vida útil debe ser estrictamente mayor que la edad.';
+            valid = false;
+          }
+          if (!estado) {
+            errEs.textContent = 'Seleccione un grado de conservación.';
+            valid = false;
+          }
+
+          return valid;
+        }
+
+        form.addEventListener('submit', function(event) {
+          event.preventDefault();
+
           const vrn = parseFloat(vrnEl.value);
           const edad = parseFloat(edadEl.value);
           const vida = parseFloat(vidaEl.value);
-          const p = estadoEl.value !== '' ? parseFloat(estadoEl.value) : null;
+          const p = estadoEl.value ? parseFloat(estadoEl.value) : NaN;
 
-          if(!validateInputs(vrn,edad,vida,estadoEl.value)){
-            results.classList.add('hidden');resultsEmpty.classList.remove('hidden');return
+          if (!validateInputs(vrn, edad, vida, estadoEl.value)) {
+            results.classList.add('hidden');
+            resultsEmpty.classList.remove('hidden');
+            return;
           }
 
-          // Cálculos según especificación
-          const R = 0.5 * ((edad/vida) + ((edad*edad)/(vida*vida)));
+          const R = 0.5 * ((edad / vida) + ((edad * edad) / (vida * vida)));
           const F_total = R + (p * (1 - R));
           const depreciacion = vrn * F_total;
           const valorNeto = vrn * (1 - F_total);
 
-          // Mostrar resultados
           R_val.textContent = formatFactor(R);
           p_val.textContent = formatFactor(p);
           F_val.textContent = formatFactor(F_total);
           depr_val.textContent = formatMoney(depreciacion);
           neto_val.textContent = formatMoney(valorNeto);
 
-          resultsEmpty.classList.add('hidden');results.classList.remove('hidden');
+          resultsEmpty.classList.add('hidden');
+          results.classList.remove('hidden');
         });
 
-        document.getElementById('btn-reset').addEventListener('click',function(){
-          clearErrors(); results.classList.add('hidden'); resultsEmpty.classList.remove('hidden');
+        document.getElementById('btn-reset').addEventListener('click', function() {
+          clearErrors();
+          results.classList.add('hidden');
+          resultsEmpty.classList.remove('hidden');
         });
       })();
     </script>
   </body>
 </html>
+EOF
