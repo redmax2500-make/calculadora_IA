@@ -2,275 +2,325 @@
 <html lang="es">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Calculadora Profesional — Ross‑Heidecke</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Calculadora Corporativa — Ross‑Heidecke</title>
     <style>
-      :root{
-        --blue-900:#0b2340;
-        --blue-700:#1f5fbf;
-        --sky:#4a90e2;
-        --gray-100:#f4f7fb;
-        --border:#e2e8f0;
-        --text:#1f2d3d;
-        --muted:#6b7684;
-        --danger:#c94a4a;
-        --white:#ffffff;
+      :root {
+        --navy: #0e2645;
+        --blue: #1f62c5;
+        --sky: #68a6ff;
+        --ice: #edf4fb;
+        --white: #ffffff;
+        --surface: #f7f9fc;
+        --border: #d9e2ef;
+        --text: #14243b;
+        --muted: #6b7a90;
+        --success: #1b7a59;
+        --danger: #d14343;
       }
-      *{box-sizing:border-box;}
-      html,body{height:100%;}
-      body{
-        margin:0;
-        font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-        background:linear-gradient(180deg,var(--gray-100) 0%, #fbfdff 100%);
-        color:var(--text);
-        -webkit-font-smoothing:antialiased;
-        -moz-osx-font-smoothing:grayscale;
-        padding:28px;
-        display:flex;
-        align-items:center;
-        justify-content:center;
+
+      * { box-sizing: border-box; }
+      html, body { min-height: 100%; margin: 0; font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif; background: linear-gradient(180deg, #f4f7fb 0%, #eef4fb 100%); color: var(--text); }
+      body { padding: 20px; }
+      .page { max-width: 1180px; margin: 0 auto; }
+      .shell { background: var(--white); border-radius: 24px; box-shadow: 0 24px 50px rgba(15, 45, 85, 0.12); overflow: hidden; border: 1px solid rgba(13, 37, 69, 0.08); }
+      .hero { background: linear-gradient(135deg, var(--navy), var(--blue)); color: var(--white); padding: 34px 40px; }
+      .hero h1 { margin: 0 0 12px; font-size: clamp(1.8rem, 2.8vw, 2.6rem); line-height: 1.05; }
+      .hero p { margin: 0; max-width: 760px; font-size: 1rem; opacity: 0.92; }
+      .grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 0; }
+      .panel { padding: 32px; }
+      .section-title { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--blue); margin: 0 0 18px; }
+      .field { margin-bottom: 20px; }
+      label { display: block; color: var(--navy); font-weight: 700; margin-bottom: 8px; }
+      input, select { width: 100%; border-radius: 14px; border: 1px solid var(--border); background: var(--surface); padding: 14px 16px; font-size: 1rem; color: var(--text); }
+      input:focus, select:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 4px rgba(31,98,197,0.12); }
+      .hint { display: block; margin-top: 8px; color: var(--muted); font-size: 0.9rem; }
+      .error { margin-top: 8px; color: var(--danger); font-size: 0.92rem; min-height: 1.2em; }
+      .row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+      .actions { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 18px; }
+      button { border: none; border-radius: 14px; padding: 14px 22px; font-weight: 700; cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease; }
+      button:hover { transform: translateY(-1px); }
+      .btn-primary { background: linear-gradient(135deg, var(--blue), var(--sky)); color: var(--white); box-shadow: 0 12px 24px rgba(31, 98, 197, 0.18); }
+      .btn-secondary { background: #f5f8ff; color: var(--navy); }
+      .btn-print { background: var(--success); color: #fff; }
+      .result-panel { background: var(--ice); border-left: 1px solid var(--border); }
+      .result-shell { display: grid; gap: 24px; }
+      .summary-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+      .stat-card { background: var(--white); border: 1px solid var(--border); padding: 20px; border-radius: 18px; }
+      .stat-card span { display: block; color: var(--muted); font-size: 0.85rem; margin-bottom: 10px; }
+      .stat-card strong { display: block; font-size: 1.2rem; color: var(--navy); }
+      .chart-card, .table-card, .export-card { background: var(--white); border: 1px solid var(--border); border-radius: 18px; padding: 20px; }
+      .chart-card canvas { width: 100%; height: auto; display: block; }
+      .table-card table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+      .table-card th, .table-card td { text-align: left; padding: 12px 14px; border-bottom: 1px solid #e7edf7; }
+      .table-card th { font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+      .table-card td { font-size: 1rem; color: var(--text); }
+      .table-card tr:last-child td { border-bottom: none; }
+      .positive { color: var(--success); }
+      .negative { color: var(--danger); }
+      .print-notice { font-size: 0.9rem; color: var(--muted); margin-top: 10px; }
+      .hidden { display: none !important; }
+
+      @media (max-width: 980px) { .grid { grid-template-columns: 1fr; } .row { grid-template-columns: 1fr; } .summary-grid { grid-template-columns: 1fr; } }
+      @media print {
+        body { background: #fff; padding: 0; }
+        .hero, .actions, .btn-secondary { display: none; }
+        .shell { box-shadow: none; border: none; }
+        .page { padding: 0; }
       }
-      .card{
-        width:min(980px,96%);
-        background:var(--white);
-        border-radius:16px;
-        box-shadow:0 18px 40px rgba(11,35,64,0.12);
-        overflow:hidden;
-        border:1px solid var(--border);
-      }
-      .hero{
-        background:linear-gradient(120deg,var(--blue-900),var(--blue-700));
-        color:var(--white);
-        padding:28px 32px;
-      }
-      .hero h1{margin:0;font-size:clamp(1.25rem,2.6vw,1.8rem);}
-      .hero p{margin:8px 0 0;color:rgba(255,255,255,0.92);max-width:900px;line-height:1.55;}
-      .grid{display:grid;grid-template-columns:1.05fr .95fr;}
-      .panel{padding:24px;}
-      .section-title{font-size:0.875rem;font-weight:700;color:var(--blue-900);text-transform:uppercase;letter-spacing:0.04em;margin:0 0 12px;}
-      label{display:block;font-weight:600;margin-bottom:8px;color:var(--blue-900);}
-      .field{margin-bottom:16px;}
-      input[type=number],select{width:100%;padding:14px 16px;border-radius:12px;border:1px solid var(--border);font-size:1rem;background:#fff;}
-      input[type=number]:focus,select:focus{outline:none;box-shadow:0 6px 18px rgba(31,95,191,0.14);border-color:var(--sky);}
-      .hint{font-size:0.86rem;color:var(--muted);margin-top:6px;}
-      .error{color:var(--danger);font-weight:700;margin-top:8px;min-height:1.2em;}
-      .row{display:flex;gap:14px;}
-      .actions{display:flex;gap:12px;margin-top:18px;flex-wrap:wrap;}
-      button{border:0;padding:12px 18px;border-radius:12px;font-weight:700;cursor:pointer;transition:transform 0.2s ease, box-shadow 0.2s ease;}
-      button:hover{transform:translateY(-1px);}
-      .btn-primary{background:linear-gradient(135deg,var(--blue-700),var(--sky));color:var(--white);box-shadow:0 8px 22px rgba(31,95,191,0.18);}
-      .btn-ghost{background:#f7fafc;color:var(--blue-900);border:1px solid var(--border);}
-      .result-card{background:var(--white);border-radius:14px;padding:16px;border:1px solid var(--border);margin-bottom:14px;}
-      .result-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:14px;}
-      .metric{background:#f8fbff;border-radius:12px;padding:14px;border:1px solid #e7eef7;}
-      .metric .label{font-size:0.82rem;color:var(--muted);margin-bottom:8px;display:block;}
-      .metric .value{font-weight:800;color:var(--blue-900);font-size:1.05rem;}
-      .formula{background:#f4f8ff;border-left:4px solid var(--blue-700);padding:14px;border-radius:10px;color:var(--text);font-size:0.95rem;line-height:1.6;}
-      .factors{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px;}
-      .factor{background:#f4f8ff;border-radius:12px;padding:14px;border:1px solid #e7eef7;}
-      .factor .label{font-size:0.82rem;color:var(--muted);margin-bottom:6px;display:block;}
-      .factor .value{font-weight:800;font-size:1rem;color:var(--blue-900);}
-      .hidden{display:none !important;}
-      @media(max-width:860px){.grid{grid-template-columns:1fr;}.panel{padding:18px;}.factors{grid-template-columns:1fr;}}
-      @media(max-width:560px){body{padding:16px;}.hero{padding:22px 20px;}.panel{padding:18px 16px;}.actions{flex-direction:column;} .row{flex-direction:column;}}
     </style>
   </head>
   <body>
-    <main class="card" role="main">
-      <header class="hero">
-        <h1>Calculadora Profesional — Método Ross‑Heidecke</h1>
-        <p>Herramienta local para cálculo de depreciación técnica de inmuebles. Todos los cálculos se realizan en el navegador.</p>
-      </header>
+    <main class="page">
+      <section class="shell">
+        <header class="hero">
+          <h1>Calculadora Corporativa — Ross‑Heidecke</h1>
+          <p>Valoración ejecutiva de depreciación de inmuebles con reporte empresarial y exportación a PDF.</p>
+        </header>
 
-      <div class="grid">
-        <section class="panel" aria-labelledby="datos-title">
-          <h2 id="datos-title" class="section-title">Datos de entrada</h2>
+        <div class="grid">
+          <section class="panel" aria-labelledby="input-title">
+            <h2 id="input-title" class="section-title">Parámetros de cálculo</h2>
+            <form id="corp-form" novalidate>
+              <div class="field">
+                <label for="vrn">Valor de Reproducción Nuevo (VRN)</label>
+                <input id="vrn" name="vrn" type="number" min="0.01" step="0.01" placeholder="Ej. 1250500" required />
+                <span class="hint">Escriba el valor de reposición en moneda local.</span>
+                <div id="err-vrn" class="error" aria-live="polite"></div>
+              </div>
 
-          <form id="calc-form" novalidate>
-            <div class="field">
-              <label for="vrn">Valor de Reproducción Nuevo (VRN)</label>
-              <input id="vrn" name="vrn" type="number" min="0.01" step="0.01" inputmode="decimal" placeholder="Ej. 1250500" required />
-              <div class="hint">Ingrese el valor en moneda local. Debe ser mayor a 0.</div>
-              <div id="err-vrn" class="error" aria-live="polite"></div>
+              <div class="row">
+                <div class="field">
+                  <label for="edad">Edad actual del inmueble (e)</label>
+                  <input id="edad" name="edad" type="number" min="0" step="0.01" placeholder="Ej. 10" required />
+                  <span class="hint">Años completos de vida actual.</span>
+                  <div id="err-edad" class="error" aria-live="polite"></div>
+                </div>
+                <div class="field">
+                  <label for="vida">Vida útil total estimada (V)</label>
+                  <input id="vida" name="vida" type="number" min="0.01" step="0.01" placeholder="Ej. 50" required />
+                  <span class="hint">Debe ser mayor que la edad actual.</span>
+                  <div id="err-vida" class="error" aria-live="polite"></div>
+                </div>
+              </div>
+
+              <div class="field">
+                <label for="estado">Estado de conservación — Tabla Heidecke</label>
+                <select id="estado" required>
+                  <option value="">Seleccione un grado</option>
+                  <option value="0.00">Grado 1 — Nuevo / Excelente estado (p = 0.00)</option>
+                  <option value="0.03">Grado 2 — Regular / Conservación normal (p = 0.03)</option>
+                  <option value="0.08">Grado 3 — Reparaciones sencillas / Necesita mantenimiento menor (p = 0.08)</option>
+                  <option value="0.18">Grado 4 — Reparaciones importantes / Desatendido (p = 0.18)</option>
+                  <option value="0.50">Grado 5 — Demolición / Inservible (p = 0.50)</option>
+                </select>
+                <div id="err-estado" class="error" aria-live="polite"></div>
+              </div>
+
+              <div class="actions">
+                <button type="submit" class="btn-primary">Calcular</button>
+                <button type="reset" class="btn-secondary">Limpiar</button>
+                <button type="button" class="btn-print" id="print-btn">Exportar a PDF</button>
+              </div>
+              <p class="print-notice">Use el botón PDF luego de calcular para generar un reporte de resultados empresarial.</p>
+            </form>
+          </section>
+
+          <aside class="panel result-panel" aria-labelledby="results-title">
+            <h2 id="results-title" class="section-title">Informe ejecutivo</h2>
+            <div class="result-shell">
+              <div class="summary-grid">
+                <div class="stat-card">
+                  <span>Factor Ross (R)</span>
+                  <strong id="R_val">0.0000</strong>
+                </div>
+                <div class="stat-card">
+                  <span>Coeficiente Heidecke (p)</span>
+                  <strong id="p_val">0.0000</strong>
+                </div>
+                <div class="stat-card">
+                  <span>Factor Total (F_total)</span>
+                  <strong id="F_val">0.0000</strong>
+                </div>
+              </div>
+
+              <div class="chart-card">
+                <h3 style="margin:0 0 14px;color:var(--navy);font-size:1rem;">Comparativo de valor</h3>
+                <canvas id="depr-chart" width="640" height="260" aria-label="Gráfico de barras de depreciación y valor neto"></canvas>
+              </div>
+
+              <div class="table-card">
+                <h3 style="margin:0 0 14px;color:var(--navy);font-size:1rem;">Resumen de resultados</h3>
+                <table>
+                  <tbody>
+                    <tr><th>Valor de Reproducción Nuevo</th><td id="vrn-table">$0.00</td></tr>
+                    <tr><th>Edad actual (e)</th><td id="edad-table">0.00 años</td></tr>
+                    <tr><th>Vida útil total (V)</th><td id="vida-table">0.00 años</td></tr>
+                    <tr><th>Estado de conservación (p)</th><td id="p-table">0.0000</td></tr>
+                    <tr><th>Depreciación acumulada</th><td id="depr-table" class="negative">$0.00</td></tr>
+                    <tr><th>Valor actual neto</th><td id="neto-table" class="success">$0.00</td></tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
-
-            <div class="row">
-              <div style="flex:1" class="field">
-                <label for="edad">Edad actual del inmueble (e)</label>
-                <input id="edad" name="edad" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Ej. 10" required />
-                <div class="hint">Años de antigüedad.</div>
-                <div id="err-edad" class="error" aria-live="polite"></div>
-              </div>
-
-              <div style="flex:1" class="field">
-                <label for="vida">Vida útil total estimada (V)</label>
-                <input id="vida" name="vida" type="number" min="0.01" step="0.01" inputmode="decimal" placeholder="Ej. 50" required />
-                <div class="hint">Debe ser estrictamente mayor que la edad.</div>
-                <div id="err-vida" class="error" aria-live="polite"></div>
-              </div>
-            </div>
-
-            <div class="field">
-              <label for="estado">Estado de conservación — Tabla Heidecke</label>
-              <select id="estado" required>
-                <option value="">Seleccione un grado</option>
-                <option value="0.00">Grado 1 — Nuevo / Excelente estado (p = 0.00)</option>
-                <option value="0.03">Grado 2 — Regular / Conservación normal (p = 0.03)</option>
-                <option value="0.08">Grado 3 — Reparaciones sencillas / Necesita mantenimiento menor (p = 0.08)</option>
-                <option value="0.18">Grado 4 — Reparaciones importantes / Desatendido (p = 0.18)</option>
-                <option value="0.50">Grado 5 — Demolición / Inservible (p = 0.50)</option>
-              </select>
-              <div id="err-estado" class="error" aria-live="polite"></div>
-            </div>
-
-            <div class="actions">
-              <button type="submit" class="btn-primary">Calcular</button>
-              <button type="reset" class="btn-ghost" id="btn-reset">Limpiar</button>
-            </div>
-          </form>
-        </section>
-
-        <aside class="panel" aria-labelledby="result-title">
-          <h2 id="result-title" class="section-title">Resultados</h2>
-
-          <div id="results-empty" class="result-card">
-            <strong>Sin cálculo</strong>
-            <div class="hint" style="margin-top:6px;">Complete los datos y pulse "Calcular" para ver resultados.</div>
-          </div>
-
-          <div id="results" class="hidden" aria-live="polite">
-            <div class="factors">
-              <div class="factor">
-                <div class="label">Factor Ross (R)</div>
-                <div id="R_val" class="value">0.0000</div>
-              </div>
-              <div class="factor">
-                <div class="label">Coeficiente Heidecke (p)</div>
-                <div id="p_val" class="value">0.0000</div>
-              </div>
-              <div class="factor">
-                <div class="label">Factor Total (F_total)</div>
-                <div id="F_val" class="value">0.0000</div>
-              </div>
-            </div>
-
-            <div class="formula">Fórmula: R = 0.5 × ((e/V) + (e²/V²)) — F_total = R + p × (1 − R)</div>
-
-            <div class="result-grid">
-              <div class="metric">
-                <span class="label">Depreciación acumulada</span>
-                <span id="depr_val" class="value">$0.00</span>
-              </div>
-              <div class="metric">
-                <span class="label">Valor actual neto</span>
-                <span id="neto_val" class="value">$0.00</span>
-              </div>
-            </div>
-          </div>
-        </aside>
-      </div>
+          </aside>
+        </div>
+      </section>
     </main>
 
     <script>
-      (function() {
-        const form = document.getElementById('calc-form');
-        const vrnEl = document.getElementById('vrn');
-        const edadEl = document.getElementById('edad');
-        const vidaEl = document.getElementById('vida');
-        const estadoEl = document.getElementById('estado');
+      const form = document.getElementById('corp-form');
+      const vrnInput = document.getElementById('vrn');
+      const edadInput = document.getElementById('edad');
+      const vidaInput = document.getElementById('vida');
+      const estadoSelect = document.getElementById('estado');
+      const errV = document.getElementById('err-vrn');
+      const errE = document.getElementById('err-edad');
+      const errVi = document.getElementById('err-vida');
+      const errEs = document.getElementById('err-estado');
 
-        const errV = document.getElementById('err-vrn');
-        const errE = document.getElementById('err-edad');
-        const errVi = document.getElementById('err-vida');
-        const errEs = document.getElementById('err-estado');
+      const R_val = document.getElementById('R_val');
+      const p_val = document.getElementById('p_val');
+      const F_val = document.getElementById('F_val');
+      const vrnTable = document.getElementById('vrn-table');
+      const edadTable = document.getElementById('edad-table');
+      const vidaTable = document.getElementById('vida-table');
+      const pTable = document.getElementById('p-table');
+      const deprTable = document.getElementById('depr-table');
+      const netoTable = document.getElementById('neto-table');
+      const deprChart = document.getElementById('depr-chart');
+      const printBtn = document.getElementById('print-btn');
+      const chartCtx = deprChart.getContext('2d');
 
-        const results = document.getElementById('results');
-        const resultsEmpty = document.getElementById('results-empty');
-        const R_val = document.getElementById('R_val');
-        const p_val = document.getElementById('p_val');
-        const F_val = document.getElementById('F_val');
-        const depr_val = document.getElementById('depr_val');
-        const neto_val = document.getElementById('neto_val');
+      function clearErrors() {
+        errV.textContent = '';
+        errE.textContent = '';
+        errVi.textContent = '';
+        errEs.textContent = '';
+      }
 
-        function clearErrors() {
-          errV.textContent = '';
-          errE.textContent = '';
-          errVi.textContent = '';
-          errEs.textContent = '';
+      function formatFactor(value) {
+        return Number.isFinite(value) ? value.toFixed(4) : '0.0000';
+      }
+
+      function formatMoney(value) {
+        if (!Number.isFinite(value)) return '$0.00';
+        return '$' + Number(value).toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      }
+
+      function validateInputs(vrn, edad, vida, estado) {
+        let valid = true;
+        clearErrors();
+
+        if (Number.isNaN(vrn) || vrn <= 0) {
+          errV.textContent = 'VRN debe ser mayor a 0.';
+          valid = false;
+        }
+        if (Number.isNaN(edad) || edad < 0) {
+          errE.textContent = 'Edad inválida (>= 0).';
+          valid = false;
+        }
+        if (Number.isNaN(vida) || vida <= 0) {
+          errVi.textContent = 'Vida útil debe ser mayor a 0.';
+          valid = false;
+        } else if (!Number.isNaN(edad) && vida <= edad) {
+          errVi.textContent = 'Vida útil debe ser estrictamente mayor que la edad.';
+          valid = false;
+        }
+        if (!estado) {
+          errEs.textContent = 'Seleccione un grado de conservación.';
+          valid = false;
         }
 
-        function formatFactor(value) {
-          return Number.isFinite(value) ? value.toFixed(4) : '0.0000';
-        }
+        return valid;
+      }
 
-        function formatMoney(value) {
-          if (!Number.isFinite(value)) return '$0.00';
-          return '$' + Number(value).toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-        }
+      function drawChart(depreciacion, valorNeto) {
+        const width = deprChart.width;
+        const height = deprChart.height;
+        const padding = 40;
+        const barWidth = 96;
+        const maxValue = Math.max(depreciacion, valorNeto, 1);
+        chartCtx.clearRect(0, 0, width, height);
 
-        function validateInputs(vrn, edad, vida, estado) {
-          let valid = true;
-          clearErrors();
+        // Fondo
+        chartCtx.fillStyle = '#f7fbff';
+        chartCtx.fillRect(0, 0, width, height);
 
-          if (Number.isNaN(vrn) || vrn <= 0) {
-            errV.textContent = 'VRN debe ser mayor a 0.';
-            valid = false;
-          }
-          if (Number.isNaN(edad) || edad < 0) {
-            errE.textContent = 'Edad inválida (>= 0).';
-            valid = false;
-          }
-          if (Number.isNaN(vida) || vida <= 0) {
-            errVi.textContent = 'Vida útil debe ser mayor a 0.';
-            valid = false;
-          } else if (!Number.isNaN(edad) && vida <= edad) {
-            errVi.textContent = 'Vida útil debe ser estrictamente mayor que la edad.';
-            valid = false;
-          }
-          if (!estado) {
-            errEs.textContent = 'Seleccione un grado de conservación.';
-            valid = false;
-          }
+        // Ejes
+        chartCtx.strokeStyle = '#cfd8ec';
+        chartCtx.lineWidth = 1;
+        chartCtx.beginPath();
+        chartCtx.moveTo(padding, height - padding);
+        chartCtx.lineTo(width - padding, height - padding);
+        chartCtx.lineTo(width - padding, padding);
+        chartCtx.stroke();
 
-          return valid;
-        }
-
-        form.addEventListener('submit', function(event) {
-          event.preventDefault();
-
-          const vrn = parseFloat(vrnEl.value);
-          const edad = parseFloat(edadEl.value);
-          const vida = parseFloat(vidaEl.value);
-          const p = estadoEl.value ? parseFloat(estadoEl.value) : NaN;
-
-          if (!validateInputs(vrn, edad, vida, estadoEl.value)) {
-            results.classList.add('hidden');
-            resultsEmpty.classList.remove('hidden');
-            return;
-          }
-
-          const R = 0.5 * ((edad / vida) + ((edad * edad) / (vida * vida)));
-          const F_total = R + (p * (1 - R));
-          const depreciacion = vrn * F_total;
-          const valorNeto = vrn * (1 - F_total);
-
-          R_val.textContent = formatFactor(R);
-          p_val.textContent = formatFactor(p);
-          F_val.textContent = formatFactor(F_total);
-          depr_val.textContent = formatMoney(depreciacion);
-          neto_val.textContent = formatMoney(valorNeto);
-
-          resultsEmpty.classList.add('hidden');
-          results.classList.remove('hidden');
+        // Barras
+        const values = [depreciacion, valorNeto];
+        const labels = ['Depreciación', 'Valor Neto'];
+        values.forEach((value, index) => {
+          const x = padding + 60 + index * (barWidth + 60);
+          const barHeight = Math.max(0, (value / maxValue) * (height - padding * 2));
+          const y = height - padding - barHeight;
+          chartCtx.fillStyle = index === 0 ? '#1f62c5' : '#1b7a59';
+          chartCtx.fillRect(x, y, barWidth, barHeight);
+          chartCtx.fillStyle = '#14243b';
+          chartCtx.font = '600 14px Inter, system-ui';
+          chartCtx.textAlign = 'center';
+          chartCtx.fillText(labels[index], x + barWidth / 2, height - padding + 22);
+          chartCtx.fillText(formatMoney(value), x + barWidth / 2, y - 12);
         });
+      }
 
-        document.getElementById('btn-reset').addEventListener('click', function() {
-          clearErrors();
-          results.classList.add('hidden');
-          resultsEmpty.classList.remove('hidden');
-        });
-      })();
+      form.addEventListener('submit', function(event) {
+        event.preventDefault();
+        const vrn = parseFloat(vrnInput.value);
+        const edad = parseFloat(edadInput.value);
+        const vida = parseFloat(vidaInput.value);
+        const p = estadoSelect.value ? parseFloat(estadoSelect.value) : NaN;
+
+        if (!validateInputs(vrn, edad, vida, estadoSelect.value)) return;
+
+        const R = 0.5 * ((edad / vida) + ((edad * edad) / (vida * vida)));
+        const F_total = R + (p * (1 - R));
+        const depreciacion = vrn * F_total;
+        const valorNeto = vrn * (1 - F_total);
+
+        R_val.textContent = formatFactor(R);
+        p_val.textContent = formatFactor(p);
+        F_val.textContent = formatFactor(F_total);
+        vrnTable.textContent = formatMoney(vrn);
+        edadTable.textContent = `${edad.toFixed(2)} años`;
+        vidaTable.textContent = `${vida.toFixed(2)} años`;
+        pTable.textContent = formatFactor(p);
+        deprTable.textContent = formatMoney(depreciacion);
+        netoTable.textContent = formatMoney(valorNeto);
+        deprTable.classList.remove('positive');
+        deprTable.classList.add('negative');
+        netoTable.classList.remove('negative');
+        netoTable.classList.add('positive');
+
+        drawChart(depreciacion, valorNeto);
+      });
+
+      printBtn.addEventListener('click', function() {
+        window.print();
+      });
+
+      form.addEventListener('reset', function() {
+        clearErrors();
+        R_val.textContent = '0.0000';
+        p_val.textContent = '0.0000';
+        F_val.textContent = '0.0000';
+        vrnTable.textContent = '$0.00';
+        edadTable.textContent = '0.00 años';
+        vidaTable.textContent = '0.00 años';
+        pTable.textContent = '0.0000';
+        deprTable.textContent = '$0.00';
+        netoTable.textContent = '$0.00';
+        chartCtx.clearRect(0, 0, deprChart.width, deprChart.height);
+      });
     </script>
   </body>
 </html>
-EOF
